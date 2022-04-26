@@ -7,10 +7,11 @@ cnv.height = window.innerHeight - 25;
 let dots = [];
 
 let mainDot = {
-   x: 50,
-   y: 50,
-   directionX: -1,
-   directionY: -1,
+   x: cnv.width / 2,
+   y: cnv.height / 2,
+   directionX: 1,
+   directionY: 1,
+   radius: 10,
    wallsHit: 0,
    cornerHit: false,
    cornerCount: 0,
@@ -36,7 +37,7 @@ let mainDot = {
       ctx.fillStyle = this.color || "black";
       ctx.strokeStyle = this.color || "black";
       ctx.beginPath();
-      ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI); 
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI); 
       
       if (this.cornerHit) {
          ctx.stroke();
@@ -47,18 +48,18 @@ let mainDot = {
       
       this.wallsHit = 0;
 
-      if (this.x >= cnv.width) {
+      if (this.x + this.radius >= cnv.width) {
          this.directionX = -1;
          this.wallsHit++;
-      } else if (this.x <= 0) {
+      } else if (this.x - this.radius <= 0) {
          this.directionX = 1;
          this.wallsHit++;
       }
 
-      if (this.y >= cnv.height) {
+      if (this.y + this.radius >= cnv.height) {
          this.directionY = -1;
          this.wallsHit++;
-      } else if (this.y <= 0) {
+      } else if (this.y - this.radius <= 0) {
          this.directionY = 1;
          this.wallsHit++;
       }
