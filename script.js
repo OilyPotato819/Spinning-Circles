@@ -7,47 +7,69 @@ cnv.height = window.innerHeight - 25;
 let dots = [];
 
 let mainDot = {
-   x: 10,
-   y: 10,
-   directionX: 1,
-   directionY: 1,
-   color: 'black',
-   greenCount: 0,
+   x: 50,
+   y: 50,
+   directionX: -1,
+   directionY: -1,
+   wallsHit: 0,
+   cornerHit: false,
+   cornerCount: 0,
+   currentColor: 0,
+   colorCount: 0,
    draw: function () {
-      ctx.fillStyle = this.color;
+      if (this.wallsHit > 0) {
+         function randNum () {
+            return Math.floor(Math.random() * 255);
+         }
+         
+         let r = randNum();
+         let g = randNum();
+         let b = randNum();
+         
+         if (r >= 220 && g >= 220 && b >= 220) {
+            g = 0;
+         }
+      
+         this.color = `rgb(${r}, ${g}, ${b})`;
+      }
+      
+      ctx.fillStyle = this.color || "black";
+      ctx.strokeStyle = this.color || "black";
       ctx.beginPath();
-      ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
-      ctx.fill();
+      ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI); 
+      
+      if (this.cornerHit) {
+         ctx.stroke();
+         this.cornerCount++;
+      } else {
+         ctx.fill();
+      }
+      
+      this.wallsHit = 0;
 
       if (this.x >= cnv.width) {
          this.directionX = -1;
-         this.changingXDirection = true;
+         this.wallsHit++;
       } else if (this.x <= 0) {
          this.directionX = 1;
-         this.changingXDirection = true;
+         this.wallsHit++;
       }
 
       if (this.y >= cnv.height) {
          this.directionY = -1;
-         this.changingYDirection = true;
+         this.wallsHit++;
       } else if (this.y <= 0) {
          this.directionY = 1;
-         this.changingYDirection = true;
+         this.wallsHit++;
       }
-
-      if (this.changingXDirection && this.changingYDirection) {
-         this.color = 'green';
-         this.greenCount++;
-      } else if (this.color != 'green') {
-         this.changingXDirection = false;
-         this.changingYDirection = false;
+      
+      if (this.wallsHit === 2) {
+         this.cornerHit = true;
       }
-
-      if (this.greenCount >= 50) {
-         this.color = 'black';
-         this.changingXDirection = false;
-         this.changingYDirection = false;
-         this.greenCount = 0;
+      
+      if (this.cornerCount >= 50) {
+         this.cornerCount = 0;
+         this.cornerHit = false;
       }
 
       this.x += this.directionX * 2;
