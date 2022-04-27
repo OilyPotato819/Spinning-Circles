@@ -7,6 +7,7 @@ cnv.height = window.innerHeight - 25;
 let dots = [];
 
 let mainDot = {
+   speed: 2,
    x: cnv.width / 2,
    y: cnv.height / 2,
    directionX: 1,
@@ -19,62 +20,67 @@ let mainDot = {
    colorCount: 0,
    draw: function () {
       if (this.wallsHit > 0) {
-         function randNum () {
+         function randNum() {
             return Math.floor(Math.random() * 255);
          }
-         
+
          let r = randNum();
          let g = randNum();
          let b = randNum();
-         
+
          if (r >= 220 && g >= 220 && b >= 220) {
             g = 0;
          }
-      
+
          this.color = `rgb(${r}, ${g}, ${b})`;
       }
-      
-      ctx.fillStyle = this.color || "black";
-      ctx.strokeStyle = this.color || "black";
+
+      ctx.fillStyle = this.color || 'black';
+      ctx.strokeStyle = this.color || 'black';
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI); 
-      
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+
       if (this.cornerHit) {
          ctx.stroke();
          this.cornerCount++;
       } else {
          ctx.fill();
       }
-      
+
       this.wallsHit = 0;
 
+      function changeDirection(direction) {
+         if (direction === 'x') {
+            mainDot.directionX *= -1;
+         } else {
+            mainDot.directionY *= -1;
+         }
+         mainDot.wallsHit++;
+      }
+
       if (this.x + this.radius >= cnv.width) {
-         this.directionX = -1;
-         this.wallsHit++;
+         changeDirection('x');
       } else if (this.x - this.radius <= 0) {
-         this.directionX = 1;
-         this.wallsHit++;
+         changeDirection('x');
       }
 
       if (this.y + this.radius >= cnv.height) {
-         this.directionY = -1;
-         this.wallsHit++;
+         changeDirection('y');
       } else if (this.y - this.radius <= 0) {
-         this.directionY = 1;
-         this.wallsHit++;
+         changeDirection('y');
       }
-      
+
       if (this.wallsHit === 2) {
          this.cornerHit = true;
       }
-      
+
       if (this.cornerCount >= 50) {
          this.cornerCount = 0;
          this.cornerHit = false;
       }
 
-      this.x += this.directionX * 2;
-      this.y += this.directionY * 2;
+      this.x += this.directionX * this.speed;
+      this.y += this.directionY * this.speed;
    },
 };
 dots.push(mainDot);
