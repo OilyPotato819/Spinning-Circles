@@ -19,61 +19,56 @@ let mainDot = {
    currentColor: 0,
    colorCount: 0,
    draw: function () {
-      if (this.wallsHit > 0) {
-         function randNum() {
-            return Math.floor(Math.random() * 255);
-         }
-
-         let r = randNum();
-         let g = randNum();
-         let b = randNum();
-
-         if (r >= 220 && g >= 220 && b >= 220) {
-            g = 0;
-         }
-
-         this.color = `rgb(${r}, ${g}, ${b})`;
+      function randNum () {
+         return Math.floor(Math.random() * 255);
       }
-
-      ctx.fillStyle = this.color || 'black';
-      ctx.strokeStyle = this.color || 'black';
+      
+      if (this.wallsHit > 0) {
+         this.r = randNum();
+         this.g = randNum();
+         this.b = randNum();
+         
+         this.color = `rgb(${this.r}, ${this.g}, ${this.b})`;
+      }
+      
+      ctx.fillStyle = this.color || "black";
+      ctx.strokeStyle = this.color || "black";
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI); 
+      
       if (this.cornerHit) {
          ctx.stroke();
          this.cornerCount++;
       } else {
          ctx.fill();
+         ctx.strokeStyle = `rgb(${this.r - 50}, ${this.g - 50}, ${this.b - 50})`;
+         ctx.beginPath();
+         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI); 
+         ctx.stroke();
       }
-
+      
       this.wallsHit = 0;
 
-      function changeDirection(direction) {
-         if (direction === 'x') {
-            mainDot.directionX *= -1;
-         } else {
-            mainDot.directionY *= -1;
-         }
-         mainDot.wallsHit++;
-      }
-
       if (this.x + this.radius >= cnv.width) {
-         changeDirection('x');
+         this.directionX = -1;
+         this.wallsHit++;
       } else if (this.x - this.radius <= 0) {
-         changeDirection('x');
+         this.directionX = 1;
+         this.wallsHit++;
       }
 
       if (this.y + this.radius >= cnv.height) {
-         changeDirection('y');
+         this.directionY = -1;
+         this.wallsHit++;
       } else if (this.y - this.radius <= 0) {
-         changeDirection('y');
+         this.directionY = 1;
+         this.wallsHit++;
       }
-
+      
       if (this.wallsHit === 2) {
          this.cornerHit = true;
       }
-
+      
       if (this.cornerCount >= 50) {
          this.cornerCount = 0;
          this.cornerHit = false;
