@@ -36,6 +36,10 @@ let mainDot = {
          this.r = randNum();
          this.g = randNum();
          this.b = randNum();
+         
+         if (this.r >= 245 && this.g >= 245 && this.b >= 245) {
+            this.r = 0;
+         }
 
          this.color = `rgb(${this.r}, ${this.g}, ${this.b})`;
       }
