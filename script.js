@@ -76,6 +76,18 @@ let mainDot = {
          this.wallsHit++;
       }
 
+      if (this.x - this.relativeRadius >= cnv.width) {
+         this.x = cnv.width / 2;
+      } else if (this.x + this.relativeRadius <= 0) {
+         this.x = cnv.width / 2;
+      }
+
+      if (this.y - this.relativeRadius >= cnv.height) {
+         this.y = cnv.height / 2;
+      } else if (this.y + this.relativeRadius <= 0) {
+         this.y = cnv.height / 2;
+      }
+
       if (this.wallsHit === 2) {
          this.cornerHit = true;
       }
